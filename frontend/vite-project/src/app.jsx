@@ -13,7 +13,7 @@ function App() {
       <nav className="bg-gray-800 text-white p-4">
   <ul className="flex space-x-4">
     <li><Link to="/">Home</Link></li>
-    <li><Link to="/add-product">Add Product</Link></li>
+    <li><Link to="/add-product">Add my product</Link></li>
     <li><Link to="/transactions">Transactions</Link></li>
     <li><Link to="/inventory">Inventory</Link></li>
   </ul>
