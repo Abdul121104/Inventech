@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextField, Button, Box } from "@mui/material";
+import { TextField, Button, Box, Typography } from "@mui/material";
 
 function ProductForm({ onSubmit }) {
   const [formData, setFormData] = useState({
@@ -31,6 +31,17 @@ function ProductForm({ onSubmit }) {
         margin="auto"
         sx={{ bgcolor: "background.paper", p: 3, borderRadius: 2 }}
       >
+        {/* Add heading with black text color */}
+        <Typography
+          variant="h5"
+          component="h2"
+          align="center"
+          gutterBottom
+          sx={{ color: "black" }}
+        >
+          Add Product
+        </Typography>
+
         <TextField
           id="name"
           label="Name"

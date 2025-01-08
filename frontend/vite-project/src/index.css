@@ -28,3 +28,11 @@ body {
   background-color: #202124;
   color: #fff;
 }
+.center-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 64px); /* Adjust for the height of your app bar */
+  margin: 0;
+  padding: 0;
+}

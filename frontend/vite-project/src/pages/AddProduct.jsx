@@ -15,7 +15,7 @@ function AddProductPage() {
   };
   return (
     <div>
-      <h1 className="text-white text-2xl mb-4">Add Product Page</h1>
+      <h1 className="text-white text-2xl mb-4"></h1>
       <ProductForm onSubmit={handleAddProduct} />
     </div>
   );
