@@ -1,22 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { TextField, Select, MenuItem, Button, Box, Typography, List, ListItem, ListItemText, Alert, Paper } from "@mui/material";
+import { TextField, Select, MenuItem, Button, Box, Typography, List, ListItem, ListItemText, Alert, Paper, CircularProgress } from "@mui/material";
+import { Autocomplete } from "@mui/material";
 
 const TransactionForm = ({ onTransactionAdded }) => {
   const [type, setType] = useState("sale");
   const [items, setItems] = useState([]);
-  const [productId, setProductId] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState("");
+  const [products, setProducts] = useState([]);
   const [error, setError] = useState("");
+  const [loadingProducts, setLoadingProducts] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/products");
+        setProducts(response.data);
+        setLoadingProducts(false);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setError("Failed to load products. Please try again.");
+        setLoadingProducts(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const handleAddItem = () => {
-    if (!productId || !quantity) {
-      setError("Product ID and Quantity are required");
+    if (!selectedProduct || !quantity) {
+      setError("Product and Quantity are required");
       return;
     }
     setError("");
-    setItems([...items, { productId, quantity }]);
-    setProductId("");
+    setItems([...items, { productId: selectedProduct._id, productName: selectedProduct.name, quantity }]);
+    setSelectedProduct(null);
     setQuantity("");
   };
 
@@ -60,15 +79,26 @@ const TransactionForm = ({ onTransactionAdded }) => {
         </Box>
 
         <Box sx={{ mb: 3 }}>
-          <TextField
-            label="Product ID"
-            variant="outlined"
-            value={productId}
-            onChange={(e) => setProductId(e.target.value)}
-            fullWidth
-            placeholder="Enter Product ID"
-            sx={{ bgcolor: "white", borderRadius: 1 }}
-          />
+          {loadingProducts ? (
+            <CircularProgress />
+          ) : (
+            <Autocomplete
+              value={selectedProduct}
+              onChange={(event, newValue) => setSelectedProduct(newValue)}
+              options={products}
+              getOptionLabel={(option) => option.name}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Select Product"
+                  placeholder="Start typing product name..."
+                  variant="outlined"
+                  fullWidth
+                  sx={{ bgcolor: "white", borderRadius: 1 }}
+                />
+              )}
+            />
+          )}
         </Box>
 
         <Box sx={{ mb: 3 }}>
@@ -114,7 +144,7 @@ const TransactionForm = ({ onTransactionAdded }) => {
           <List sx={{ bgcolor: "#fff", borderRadius: 1, p: 2 }}>
             {items.map((item, index) => (
               <ListItem key={index} sx={{ borderBottom: "1px solid #ddd" }}>
-                <ListItemText primary={`Product ID: ${item.productId}, Quantity: ${item.quantity}`} sx={{ color: "#555" }} />
+                <ListItemText primary={`Product: ${item.productName}, Quantity: ${item.quantity}`} sx={{ color: "#555" }} />
               </ListItem>
             ))}
           </List>
